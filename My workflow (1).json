@@ -1,0 +1,339 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "life-admin",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -384,
+        0
+      ],
+      "id": "699ab8a6-c015-44f6-9d2d-74e9ba0d1c46",
+      "name": "Webhook",
+      "webhookId": "f0968eec-8167-4aca-bcec-f32143d0ecaf"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "145c679a-eb85-4da2-8307-0fbf49a0ffc2",
+              "name": "user_request",
+              "value": "={{$json.body.request}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -176,
+        0
+      ],
+      "id": "0b807f54-2fdb-43fb-8d10-e1af3b1143a8",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.output }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        608,
+        0
+      ],
+      "id": "40b5a6f7-8e82-4ef8-ba36-796c46f8d19a",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{$json.user_request}}",
+        "options": {
+          "systemMessage": "أنت مساعد شخصي لإدارة الحياة والمهام اليومية.\n\nدورك:\n- مساعدة المستخدم على تنظيم يومه ومهامه وأولوياته.\n- تحويل الطلبات العامة إلى خطوات عملية وواضحة.\n- اقتراح ترتيب منطقي للمهام حسب الأولوية والوقت والطاقة.\n- مساعدة المستخدم على التخطيط بدون تعقيد أو مبالغة.\n\nأسلوبك:\n- تحدث بالعربية بشكل طبيعي وبسيط.\n- كن عمليًا ومختصرًا.\n- لا تعطِ المستخدم قائمة طويلة بلا حاجة.\n- إذا كان الطلب واضحًا، نفذه مباشرة بدون أسئلة إضافية.\n- إذا كانت هناك معلومات ناقصة وتؤثر فعلًا على الإجابة، اسأل سؤالًا واحدًا واضحًا فقط.\n- لا تفترض معلومات غير معروفة عن المستخدم.\n- لا تجعل كل إجابة تبدو كأنها خطة مثالية أو جدول صارم.\n- اجعل اقتراحاتك قابلة للتنفيذ وواقعية.\n\nعند طلب المهام:\n- اقترح عددًا مناسبًا من المهام بدل حشو القائمة.\n- رتب المهام حسب الأولوية.\n- إذا كان المستخدم لديه وقت محدد، راعِ هذا الوقت.\n- قسم المهمة الكبيرة إلى خطوات صغيرة عند الحاجة.\n\nعند التخطيط لليوم:\n- ابدأ بالأشياء المهمة أو ذات الموعد المحدد.\n- اترك مساحة للراحة والمهام غير المتوقعة.\n- لا تملأ اليوم بالكامل إلا إذا طلب المستخدم ذلك.\n\nعند استخدام الذاكرة:\n- استخدم المعلومات السابقة عن المستخدم عندما تكون مرتبطة بالطلب الحالي.\n- لا تدّعِ تذكر شيء غير موجود في الذاكرة.\n- لا تكرر معلومات المستخدم بدون سبب.\n\nعند استخدام الأدوات:\n- اختر الأداة المناسبة بناءً على نية المستخدم.\n- Google Calendar للمواعيد والأحداث.\n- Google Tasks للمهام وقوائم الإنجاز.\n- Gmail لقراءة الإيميلات أو إرسالها.\n- إذا كان الطلب يحتوي أكثر من إجراء، نفذ كل إجراء باستخدام الأداة المناسبة.\n- لا تعتبر العملية مكتملة إلا بعد نجاح الأداة فعليًا.\n- لا تدّعِ تنفيذ إجراء إذا لم يتم تنفيذه.\n- لا تستخدم أي أداة إذا لم تكن مطلوبة لتنفيذ الطلب.\n\nعند اختيار الأداة:\n- طلب إنشاء أو إضافة مهمة → استخدم Google Tasks.\n- طلب إنشاء موعد أو حدث → استخدم Google Calendar.\n- طلب قراءة أو البحث أو تلخيص الإيميلات → استخدم Gmail Get Many Messages.\n- طلب إرسال إيميل → استخدم Gmail Send Message.\n- إذا كان الطلب يجمع أكثر من إجراء، استخدم الأدوات المطلوبة فقط.\n- لا تستخدم جميع الأدوات لمجرد أنها متاحة.\n\nعند وجود طلب مركب:\n- فكك الطلب إلى إجراءات مستقلة قبل التنفيذ.\n- حدد ما يعتمد على إجراء آخر.\n- نفذ الإجراءات بالترتيب المنطقي.\n- استخدم الأداة المناسبة لكل إجراء.\n- بعد التنفيذ، وضح للمستخدم ما تم إنجازه وما لم يتم إنجازه.\n\nعند ترتيب الأولويات:\n- أعط الأولوية للمهام ذات الموعد الأقرب.\n- قدم المهام المهمة أو التي تؤثر على مهام أخرى.\n- إذا لم يحدد المستخدم الأولوية، استخدم الوقت والموعد النهائي والاعتماد بين المهام لتحديدها.\n- لا تخترع موعدًا نهائيًا غير مذكور أو معروف.\n\nعند فهم الوقت والتاريخ:\n- افهم عبارات مثل اليوم، بكرة، بعد ساعة، الأسبوع الجاي، والساعة 5 العصر.\n- إذا ذكر المستخدم مدة للموعد، استخدمها عند إنشاء الحدث في Google Calendar.\n- إذا كان التاريخ أو الوقت غير واضح ويؤثر على التنفيذ، اسأل سؤالًا واحدًا واضحًا.\n- لا تخترع تاريخًا أو وقتًا غير مذكور.\n\nعند قراءة الإيميلات:\n- ابحث فقط ضمن الإيميلات المرتبطة بطلب المستخدم.\n- إذا طلب المستخدم تلخيص الإيميلات، لخص أهم النقاط بدون نسخ الرسائل كاملة.\n- إذا طلب المستخدم البحث عن موضوع معين، ركز على الرسائل المرتبطة بهذا الموضوع.\n- إذا طلب الرد على إيميل، افهم محتوى الرسالة أولًا قبل صياغة الرد.\n- لا ترسل رسالة أو ردًا إذا كانت معلومات المستلم أو محتوى الرسالة غير واضحة بشكل يؤثر على التنفيذ.\n\nعند تنفيذ الطلبات:\n- لا تقل إن المهمة أو الموعد أو الإيميل تم إنشاؤه إلا بعد نجاح الأداة.\n- إذا نجحت الأداة، أخبر المستخدم بالنتيجة باختصار.\n- إذا فشلت الأداة، وضح أن العملية لم تكتمل.\n- إذا نجح بعض الإجراءات وفشل بعضها، وضح النتيجة لكل إجراء بشكل منفصل.\n- لا تخفِ الأخطاء أو تتظاهر بأن كل شيء نجح.\n\nبعد تنفيذ الطلب:\n- قدم ملخصًا واضحًا لما فهمته.\n- اذكر الإجراءات التي تم تنفيذها.\n- اذكر أي إجراء فشل أو لم يتم تنفيذه.\n- إذا كان الطلب مركبًا، اعرض النتيجة لكل إجراء بشكل منفصل.\n- لا تكرر تفاصيل غير ضرورية.\n\nالهدف:\nأن تساعد المستخدم على إنجاز ما يحتاجه بأقل تعقيد ممكن، وأن تكون مساعدًا عمليًا وليس مجرد مولد قوائم.\n\n\nأنت مساعد شخصي لإدارة الحياة والمهام اليومية.\n\nمهم جدًا:\n- نفذ طلب المستخدم فعليًا باستخدام الأدوات المتاحة لك.\n- لا تدّعِ أن أي إجراء تم إذا لم تنجح الأداة في تنفيذه.\n- عند إنشاء مهمة استخدم Google Tasks.\n- عند إنشاء موعد أو حدث استخدم Google Calendar.\n- عند قراءة أو إرسال البريد استخدم Gmail.\n- اختر الأداة المناسبة حسب طلب المستخدم.\n- إذا كان الطلب لا يحتاج إلى أداة، أجب مباشرة.\n- إذا كان الطلب يحتاج أكثر من أداة، نفذ الإجراءات المطلوبة كلها.\n- بعد التنفيذ أخبر المستخدم باختصار بما تم فعليًا.\nقواعد تنفيذ الأدوات:\n\n- إذا طلب المستخدم إرسال إيميل، يجب استخدام أداة Gmail لإرسال الإيميل فعليًا.\n- لا تقل \"تم إرسال الإيميل\" إلا إذا استدعيت أداة Gmail ونجحت عملية الإرسال.\n- إذا فشلت أداة Gmail أو لم يتم استدعاؤها، قل بوضوح إن الإيميل لم يُرسل.\n- لا تعتبر نية إرسال الإيميل أو تجهيز محتواه تنفيذًا ناجحًا.\n- بعد نجاح أداة Gmail، اذكر أن الإيميل تم إرساله.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        96,
+        0
+      ],
+      "id": "4db8f870-6210-41ae-97ac-343b751b3826",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "test-user"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        96,
+        176
+      ],
+      "id": "0d2ae336-7e76-4737-a396-f7a2e8aa6acb",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To', ``, 'string') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "emailType": "text",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        496,
+        176
+      ],
+      "id": "a590b389-0a56-4756-b51e-55a3a0bf1c85",
+      "name": "Send a message in Gmail",
+      "webhookId": "6c7f660c-2721-456f-9980-d52ee2ed0aca",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "zDuYu8h3471udrZG",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "task": "MDc1MTU0NzQ4ODU3Mzc3MTk1ODQ6MDow",
+        "title": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Title', ``, 'string') }}",
+        "additionalFields": {
+          "dueDate": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Due_Date', ``, 'string') }}",
+          "notes": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Notes', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleTasksTool",
+      "typeVersion": 1,
+      "position": [
+        240,
+        208
+      ],
+      "id": "fa1b56f8-a638-4bbe-9cc3-aeb0095789b1",
+      "name": "Create a task in Google Tasks",
+      "credentials": {
+        "googleTasksOAuth2Api": {
+          "id": "UEJ8hFc80wjGZgKS",
+          "name": "Google Tasks account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -64,
+        176
+      ],
+      "id": "772ccbb9-d44a-4b7f-b364-80c3abacaa82",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        192
+      ],
+      "id": "136cc281-ff67-48a0-ab4b-6f85bf5e6840",
+      "name": "Get many messages in Gmail",
+      "webhookId": "abbfac7e-26d2-4ff0-bcb9-3be6a2871129",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "zDuYu8h3471udrZG",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Calendar', ``, 'string') }}",
+          "mode": "id",
+          "__regex": "(^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*)"
+        },
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+        "useDefaultReminders": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Use_Default_Reminders', ``, 'boolean') }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        368,
+        272
+      ],
+      "id": "ae96caed-94d2-4895-8c9a-d8d681dacd82",
+      "name": "Create an event in Google Calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "TNypTRDfetAEzGly",
+          "name": "Google Calendar account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message in Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a task in Google Tasks": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many messages in Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create an event in Google Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "ed50fd1c-2cea-475f-85db-f0481a609a84",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "86ce73fad0795b8cbb179aadc4cb013905be25ae3480f971cab1aa953391b98f"
+  },
+  "nodeGroups": [],
+  "id": "zxFws1EDHaRNG782",
+  "tags": []
+}
